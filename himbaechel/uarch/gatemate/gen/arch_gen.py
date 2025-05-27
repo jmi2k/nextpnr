@@ -115,13 +115,13 @@ class BelExtraData(BBAStruct):
         bba.slice(f"{context}_constraints", len(self.constraints))
 
 def convert_timing(tim):
-    return TimingValue(tim.min, tim.max)
+    return TimingValue(tim.rise.min, tim.rise.max)
 
 def set_timings(ch):
     speed_grades = ["best_lpr", "best_eco", "best_spd",
                     "typ_lpr", "typ_eco", "typ_spd",
                     "worst_lpr", "worst_eco", "worst_spd"]
-    #speed_grades = ["worst_spd"]
+    speed_grades = ["worst_spd"]
     tmg = ch.set_speed_grades(speed_grades)
     for speed in speed_grades:
         print(f"Loading timings for {speed}...")
@@ -152,10 +152,16 @@ def set_timings(ch):
         lut.add_comb_arc("IN4", "OUT", convert_timing(timing["_ARBLUT_IN4_OUT2"])) # to OUT2
 
         dff = ch.timing.add_cell_variant(speed, "CPE_DFF")
-        dff.add_setup_hold("CLK", "IN1", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN1_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN1_OUT2"]))
-        dff.add_setup_hold("CLK", "IN2", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN2_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN2_OUT2"]))
-        dff.add_setup_hold("CLK", "IN3", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN3_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN3_OUT2"]))
-        dff.add_setup_hold("CLK", "IN4", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN4_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN4_OUT2"]))
+        #dff.add_setup_hold("CLK", "IN1", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN1_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN1_OUT2"]))
+        #dff.add_setup_hold("CLK", "IN2", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN2_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN2_OUT2"]))
+        #dff.add_setup_hold("CLK", "IN3", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN3_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN3_OUT2"]))
+        #dff.add_setup_hold("CLK", "IN4", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"] + timing["_ARBLUT_IN4_OUT2"]), convert_timing(timing["del_Hold_D_L"] + timing["_ARBLUT_IN4_OUT2"]))
+        #dff.add_setup_hold("CLK", "EN", ClockEdge.RISING, convert_timing(timing["del_Setup_SN_RN"]), convert_timing(timing["del_Hold_SN_RN"]))
+        #dff.add_setup_hold("CLK", "SR", ClockEdge.RISING, convert_timing(timing["del_Setup_RN_SN"]), convert_timing(timing["del_Hold_RN_SN"]))
+        dff.add_setup_hold("CLK", "IN1", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"]), convert_timing(timing["del_Hold_D_L"]))
+        dff.add_setup_hold("CLK", "IN2", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"]), convert_timing(timing["del_Hold_D_L"]))
+        dff.add_setup_hold("CLK", "IN3", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"]), convert_timing(timing["del_Hold_D_L"]))
+        dff.add_setup_hold("CLK", "IN4", ClockEdge.RISING, convert_timing(timing["del_Setup_D_L"]), convert_timing(timing["del_Hold_D_L"]))
         dff.add_setup_hold("CLK", "EN", ClockEdge.RISING, convert_timing(timing["del_Setup_SN_RN"]), convert_timing(timing["del_Hold_SN_RN"]))
         dff.add_setup_hold("CLK", "SR", ClockEdge.RISING, convert_timing(timing["del_Setup_RN_SN"]), convert_timing(timing["del_Hold_RN_SN"]))
         dff.add_clock_out("CLK", "OUT", ClockEdge.RISING, TimingValue(500))
